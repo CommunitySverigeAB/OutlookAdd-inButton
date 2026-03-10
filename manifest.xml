@@ -13,8 +13,8 @@
   <DisplayName DefaultValue="Beställning (delad brevlåda)"/>
   <Description DefaultValue="Lägger till kategorin Beställning och flaggar mailet."/>
   <!-- Byt till din GitHub Pages-url -->
-  <IconUrl DefaultValue="https://melindawalter.github.io/outlook-category-button/assets/icon-64.png"/>
-  <HighResolutionIconUrl DefaultValue="https://melindawalter.github.io/outlook-category-button/assets/icon-128.png"/>
+  <IconUrl DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/assets/icon-64.png"/>
+  <HighResolutionIconUrl DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton//assets/icon-128.png"/>
 
   <Hosts><Host Name="Mailbox"/></Hosts>
 
@@ -35,7 +35,7 @@
     <!-- APP-ID för din Entra-app (guid) -->
     <Id>00000000-0000-0000-0000-000000000000</Id>
     <!-- Resource ska vara *samma domän* som dina webbresurser (GitHub Pages-domän) -->
-    <Resource>api://melindawalter.github.io/outlook-category-button</Resource>
+    <Resource>api://communitysverigeab.github.io/OutlookAdd-inButton/</Resource>
     <Scopes>
       <!-- Graf-behörigheter: flagga och kategori via Graph kräver Mail.ReadWrite -->
       <Scope>Mail.ReadWrite</Scope>
@@ -103,13 +103,13 @@
 
     <version:Resources>
       <bt:Images>
-        <bt:Image id="Icon16" DefaultValue="https://melindawalter.github.io/outlook-category-button/assets/icon-16.png"/>
-        <bt:Image id="Icon32" DefaultValue="https://melindawalter.github.io/outlook-category-button/assets/icon-32.png"/>
-        <bt:Image id="Icon80" DefaultValue="https://melindawalter.github.io/outlook-category-button/assets/icon-80.png"/>
+        <bt:Image id="Icon16" DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/assets/icon-16.png"/>
+        <bt:Image id="Icon32" DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/assets/icon-32.png"/>
+        <bt:Image id="Icon80" DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/assets/icon-80.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="taskpaneUrl"  DefaultValue="https://melindawalter.github.io/outlook-category-button/taskpane.html"/>
-        <bt:Url id="functionsUrl" DefaultValue="https://melindawalter.github.io/outlook-category-button/commands.html"/>
+        <bt:Url id="taskpaneUrl"  DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/taskpane.html"/>
+        <bt:Url id="functionsUrl" DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/commands.html"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="lblOpenPane" DefaultValue="Öppna panel"/>
