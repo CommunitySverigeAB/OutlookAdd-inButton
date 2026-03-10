@@ -35,7 +35,7 @@
     <!-- APP-ID för din Entra-app (guid) -->
     <Id>8d7be25b-0788-44d7-8575-1fcdd6ee79c2</Id>
     <!-- Resource ska vara *samma domän* som dina webbresurser (GitHub Pages-domän) -->
-    <Resource>api://communitysverigeab.github.io/OutlookAdd-inButton/</Resource>
+    <Resource>api://communitysverigeab.github.io/OutlookAdd-inButton</Resource>
     <Scopes>
       <!-- Graf-behörigheter: flagga och kategori via Graph kräver Mail.ReadWrite -->
       <Scope>Mail.ReadWrite</Scope>
