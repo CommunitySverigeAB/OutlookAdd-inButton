@@ -12,32 +12,47 @@
   <DefaultLocale>sv-SE</DefaultLocale>
   <DisplayName DefaultValue="Beställning (delad brevlåda)"/>
   <Description DefaultValue="Lägger till kategorin Beställning och flaggar mailet."/>
-  <!-- Byt till din GitHub Pages-url -->
   <IconUrl DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/assets/icon-64.png"/>
   <HighResolutionIconUrl DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/assets/icon-128.png"/>
+  <!-- Lägg in en supportlänk (krävs av valideraren) -->
+  <SupportUrl DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/"/>
 
-  <Hosts><Host Name="Mailbox"/></Hosts>
+  <Hosts>
+    <Host Name="Mailbox"/>
+  </Hosts>
 
-  <!-- Mailbox 1.13 så vi säkert har moderna API:n i nya Outlook och OWA -->
-  <Requirements><Sets><Set Name="Mailbox" MinVersion="1.13"/></Sets></Requirements>
+  <!-- Kravnivå för moderna API:er i Nya Outlook/OWA -->
+  <Requirements>
+    <Sets>
+      <Set Name="Mailbox" MinVersion="1.13"/>
+    </Sets>
+  </Requirements>
 
-  <!-- Behörighet: ReadWriteMailbox krävs om vi skapar kategorin i masterlistan.
-       (Om du vet att "Beställning" redan finns kan du i teorin sänka till ReadWriteItem.) -->
+  <!-- WERK: FormSettings måste finnas och komma FÖRE <Permissions>.
+       SourceLocation kan peka på samma taskpane.html du använder i kommandot. -->
+  <FormSettings>
+    <Form xsi:type="ItemRead">
+      <DesktopSettings>
+        <SourceLocation DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/taskpane.html"/>
+        <RequestedHeight>250</RequestedHeight>
+      </DesktopSettings>
+    </Form>
+  </FormSettings>
+
+  <!-- Behörighet: ReadWriteMailbox om du ev. skapar kategorin i masterlistan -->
   <Permissions>ReadWriteMailbox</Permissions>
 
-  <!-- Aktivera knappar när man LÄSER meddelande -->
+  <!-- Aktiveras på e-post i läsläge -->
   <Rule xsi:type="RuleCollection" Mode="Or">
     <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
   </Rule>
 
-  <!-- SSO: Registrera din Entra-app och uppdatera Id/Resource -->
+  <!-- SSO: Se till att denna domän matchar alla resurser.
+       Ingen trailing slash i Resource. -->
   <WebApplicationInfo>
-    <!-- APP-ID för din Entra-app (guid) -->
     <Id>8d7be25b-0788-44d7-8575-1fcdd6ee79c2</Id>
-    <!-- Resource ska vara *samma domän* som dina webbresurser (GitHub Pages-domän) -->
     <Resource>api://communitysverigeab.github.io/OutlookAdd-inButton</Resource>
     <Scopes>
-      <!-- Graf-behörigheter: flagga och kategori via Graph kräver Mail.ReadWrite -->
       <Scope>Mail.ReadWrite</Scope>
       <Scope>openid</Scope>
       <Scope>profile</Scope>
@@ -46,18 +61,20 @@
     </Scopes>
   </WebApplicationInfo>
 
+  <!-- Kommandon + shared mailbox-stöd -->
   <VersionOverrides xsi:type="version:VersionOverrides" Version="1.0">
     <version:Hosts>
       <version:Host xsi:type="version:MailHost">
         <version:DesktopFormFactor>
+
           <!-- Viktigt för delade brevlådor -->
           <version:SupportsSharedFolders>true</version:SupportsSharedFolders>
 
-          <!-- Command surface i läsfönstret -->
           <version:ExtensionPoint xsi:type="version:MessageReadCommandSurface">
             <version:OfficeTab id="TabDefault">
               <version:Group id="grpOrder" label="Beställning">
-                <!-- Öppna panel (frivillig) -->
+
+                <!-- Öppna panel (valfritt) -->
                 <version:Control xsi:type="version:Button" id="openPane">
                   <version:Label resid="lblOpenPane"/>
                   <version:Supertip>
@@ -74,7 +91,7 @@
                   </version:Action>
                 </version:Control>
 
-                <!-- Huvudknappen: sätter kategori + flaggar -->
+                <!-- Huvudknappen: kategori + flagga -->
                 <version:Control xsi:type="version:Button" id="orderAndFlag">
                   <version:Label resid="lblOrder"/>
                   <version:Supertip>
@@ -90,11 +107,12 @@
                     <version:FunctionName>setOrderCategoryAndFlag</version:FunctionName>
                   </version:Action>
                 </version:Control>
+
               </version:Group>
             </version:OfficeTab>
           </version:ExtensionPoint>
 
-          <!-- Function file (samma domän som WebApplicationInfo.Resource) -->
+          <!-- FunctionFile måste peka på samma domän som Resource -->
           <version:FunctionFile resid="functionsUrl"/>
 
         </version:DesktopFormFactor>
@@ -107,14 +125,17 @@
         <bt:Image id="Icon32" DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/assets/icon-32.png"/>
         <bt:Image id="Icon80" DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/assets/icon-80.png"/>
       </bt:Images>
+
       <bt:Urls>
         <bt:Url id="taskpaneUrl"  DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/taskpane.html"/>
         <bt:Url id="functionsUrl" DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/commands.html"/>
       </bt:Urls>
+
       <bt:ShortStrings>
         <bt:String id="lblOpenPane" DefaultValue="Öppna panel"/>
         <bt:String id="lblOrder"    DefaultValue="Beställning + flagga"/>
       </bt:ShortStrings>
+
       <bt:LongStrings>
         <bt:String id="tipOpenPane" DefaultValue="Öppnar tilläggets panel."/>
         <bt:String id="tipOrder"    DefaultValue="Lägger till kategorin Beställning och flaggar meddelandet."/>
