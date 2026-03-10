@@ -1,0 +1,33 @@
+# Node / build
+node_modules/
+dist/
+build/
+out/
+coverage/
+.tmp/
+.temp/
+.cache/
+.parcel-cache/
+.eslintcache
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Env
+.env
+.env.*.local
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Office/VS artifacts (om de finns)
+~$*
+*.user
+*.suo

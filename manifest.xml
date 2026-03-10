@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OfficeApp
+  xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+  xmlns:version="http://schemas.microsoft.com/office/mailappversionoverrides/1.1"
+  xsi:type="MailApp">
+
+  <Id>d70a18a8-9705-4fe1-8a07-ab1c9aa8b3ee</Id>
+  <Version>1.0.0.0</Version>
+  <ProviderName>Contoso</ProviderName>
+  <DefaultLocale>sv-SE</DefaultLocale>
+  <DisplayName DefaultValue="Beställning (delad brevlåda)"/>
+  <Description DefaultValue="Lägger till kategorin Beställning och flaggar mailet."/>
+  <!-- Byt till din GitHub Pages-url -->
+  <IconUrl DefaultValue="https://melindawalter.github.io/outlook-category-button/assets/icon-64.png"/>
+  <HighResolutionIconUrl DefaultValue="https://melindawalter.github.io/outlook-category-button/assets/icon-128.png"/>
+
+  <Hosts><Host Name="Mailbox"/></Hosts>
+
+  <!-- Mailbox 1.13 så vi säkert har moderna API:n i nya Outlook och OWA -->
+  <Requirements><Sets><Set Name="Mailbox" MinVersion="1.13"/></Sets></Requirements>
+
+  <!-- Behörighet: ReadWriteMailbox krävs om vi skapar kategorin i masterlistan.
+       (Om du vet att "Beställning" redan finns kan du i teorin sänka till ReadWriteItem.) -->
+  <Permissions>ReadWriteMailbox</Permissions>
+
+  <!-- Aktivera knappar när man LÄSER meddelande -->
+  <Rule xsi:type="RuleCollection" Mode="Or">
+    <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
+  </Rule>
+
+  <!-- SSO: Registrera din Entra-app och uppdatera Id/Resource -->
+  <WebApplicationInfo>
+    <!-- APP-ID för din Entra-app (guid) -->
+    <Id>00000000-0000-0000-0000-000000000000</Id>
+    <!-- Resource ska vara *samma domän* som dina webbresurser (GitHub Pages-domän) -->
+    <Resource>api://melindawalter.github.io/outlook-category-button</Resource>
+    <Scopes>
+      <!-- Graf-behörigheter: flagga och kategori via Graph kräver Mail.ReadWrite -->
+      <Scope>Mail.ReadWrite</Scope>
+      <Scope>openid</Scope>
+      <Scope>profile</Scope>
+      <Scope>email</Scope>
+      <Scope>offline_access</Scope>
+    </Scopes>
+  </WebApplicationInfo>
+
+  <VersionOverrides xsi:type="version:VersionOverrides" Version="1.0">
+    <version:Hosts>
+      <version:Host xsi:type="version:MailHost">
+        <version:DesktopFormFactor>
+          <!-- Viktigt för delade brevlådor -->
+          <version:SupportsSharedFolders>true</version:SupportsSharedFolders>
+
+          <!-- Command surface i läsfönstret -->
+          <version:ExtensionPoint xsi:type="version:MessageReadCommandSurface">
+            <version:OfficeTab id="TabDefault">
+              <version:Group id="grpOrder" label="Beställning">
+                <!-- Öppna panel (frivillig) -->
+                <version:Control xsi:type="version:Button" id="openPane">
+                  <version:Label resid="lblOpenPane"/>
+                  <version:Supertip>
+                    <version:Title resid="lblOpenPane"/>
+                    <version:Description resid="tipOpenPane"/>
+                  </version:Supertip>
+                  <version:Icon>
+                    <bt:Image size="16" resid="Icon16"/>
+                    <bt:Image size="32" resid="Icon32"/>
+                    <bt:Image size="80" resid="Icon80"/>
+                  </version:Icon>
+                  <version:Action xsi:type="version:ShowTaskpane">
+                    <version:SourceLocation resid="taskpaneUrl"/>
+                  </version:Action>
+                </version:Control>
+
+                <!-- Huvudknappen: sätter kategori + flaggar -->
+                <version:Control xsi:type="version:Button" id="orderAndFlag">
+                  <version:Label resid="lblOrder"/>
+                  <version:Supertip>
+                    <version:Title resid="lblOrder"/>
+                    <version:Description resid="tipOrder"/>
+                  </version:Supertip>
+                  <version:Icon>
+                    <bt:Image size="16" resid="Icon16"/>
+                    <bt:Image size="32" resid="Icon32"/>
+                    <bt:Image size="80" resid="Icon80"/>
+                  </version:Icon>
+                  <version:Action xsi:type="version:ExecuteFunction">
+                    <version:FunctionName>setOrderCategoryAndFlag</version:FunctionName>
+                  </version:Action>
+                </version:Control>
+              </version:Group>
+            </version:OfficeTab>
+          </version:ExtensionPoint>
+
+          <!-- Function file (samma domän som WebApplicationInfo.Resource) -->
+          <version:FunctionFile resid="functionsUrl"/>
+
+        </version:DesktopFormFactor>
+      </version:Host>
+    </version:Hosts>
+
+    <version:Resources>
+      <bt:Images>
+        <bt:Image id="Icon16" DefaultValue="https://melindawalter.github.io/outlook-category-button/assets/icon-16.png"/>
+        <bt:Image id="Icon32" DefaultValue="https://melindawalter.github.io/outlook-category-button/assets/icon-32.png"/>
+        <bt:Image id="Icon80" DefaultValue="https://melindawalter.github.io/outlook-category-button/assets/icon-80.png"/>
+      </bt:Images>
+      <bt:Urls>
+        <bt:Url id="taskpaneUrl"  DefaultValue="https://melindawalter.github.io/outlook-category-button/taskpane.html"/>
+        <bt:Url id="functionsUrl" DefaultValue="https://melindawalter.github.io/outlook-category-button/commands.html"/>
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="lblOpenPane" DefaultValue="Öppna panel"/>
+        <bt:String id="lblOrder"    DefaultValue="Beställning + flagga"/>
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="tipOpenPane" DefaultValue="Öppnar tilläggets panel."/>
+        <bt:String id="tipOrder"    DefaultValue="Lägger till kategorin Beställning och flaggar meddelandet."/>
+      </bt:LongStrings>
+    </version:Resources>
+  </VersionOverrides>
+</OfficeApp>
