@@ -10,7 +10,7 @@
   <Version>1.0.0.2</Version>
   <ProviderName>Community Sverige</ProviderName>
   <DefaultLocale>sv-SE</DefaultLocale>
-  <DisplayName DefaultValue="Beställning (delad brevlåda)"/>
+  <DisplayName DefaultValue="Flagga beställning"/>
   <Description DefaultValue="Lägger till kategorin Beställning på mailet."/>
   <IconUrl DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/assets/icon-64.png"/>
   <HighResolutionIconUrl DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/assets/icon-128.png"/>
