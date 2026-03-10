@@ -4,57 +4,34 @@ Office.onReady(() => {
   // ready
 });
 
-async function setOrderCategoryAndFlag(event) {
-  try {
-    const item = Office.context.mailbox.item;
+function setOrderCategory(event) {
+  const item = Office.context.mailbox.item;
 
-    item.categories.addAsync(["Beställning"], (res) => {
-      if (res.status === Office.AsyncResultStatus.Succeeded) {
-        item.notificationMessages.replaceAsync(
-          "orderDone",
-          {
+  if (!item) {
+    event.completed();
+    return;
+  }
+
+  item.categories.addAsync(["Beställning"], (res) => {
+    const message =
+      res.status === Office.AsyncResultStatus.Succeeded
+        ? {
             type: Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,
             message: "Kategorin Beställning lades till.",
             icon: "Icon.16x16",
             persistent: false
-          },
-          () => {
-            event.completed();
           }
-        );
-      } else {
-        item.notificationMessages.replaceAsync(
-          "orderErr",
-          {
+        : {
             type: Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,
             message: `Fel: ${res.error.message}`,
             icon: "Icon.16x16",
             persistent: false
-          },
-          () => {
-            event.completed();
-          }
-        );
-      }
-    });
-  } catch (e) {
-    try {
-      Office.context.mailbox.item.notificationMessages.replaceAsync(
-        "orderErr",
-        {
-          type: Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,
-          message: `Fel: ${e.message || e}`,
-          icon: "Icon.16x16",
-          persistent: false
-        },
-        () => {
-          event.completed();
-        }
-      );
-    } catch {
+          };
+
+    item.notificationMessages.replaceAsync("orderStatus", message, () => {
       event.completed();
-    }
-  }
+    });
+  });
 }
 
-Office.actions.associate("setOrderCategoryAndFlag", setOrderCategoryAndFlag);
+Office.actions.associate("setOrderCategory", setOrderCategory);
