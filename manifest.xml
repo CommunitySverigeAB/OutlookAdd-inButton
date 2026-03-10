@@ -14,7 +14,7 @@
   <Description DefaultValue="Lägger till kategorin Beställning och flaggar mailet."/>
   <!-- Byt till din GitHub Pages-url -->
   <IconUrl DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/assets/icon-64.png"/>
-  <HighResolutionIconUrl DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton//assets/icon-128.png"/>
+  <HighResolutionIconUrl DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/assets/icon-128.png"/>
 
   <Hosts><Host Name="Mailbox"/></Hosts>
 
