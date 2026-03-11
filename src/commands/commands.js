@@ -20,11 +20,9 @@ function notify(item, type, message, persistent = false) {
 function setOrderCategory(event) {
   console.log("Button clicked");
 
-  const mailbox = Office.context.mailbox;
-  const item = mailbox.item;
+  const item = Office.context.mailbox.item;
   const categoryName = "Beställning";
 
-  console.log("Mailbox:", mailbox);
   console.log("Item:", item);
 
   if (!item) {
@@ -33,9 +31,10 @@ function setOrderCategory(event) {
     return;
   }
 
-  console.log("Existing categories on item:", item.categories);
+  console.log("Existing categories object:", item.categories);
 
   if (!item.categories) {
+    console.log("item.categories missing");
     notify(
       item,
       Office.MailboxEnums.ItemNotificationMessageType.ErrorMessage,
@@ -46,43 +45,43 @@ function setOrderCategory(event) {
     return;
   }
 
-  // DEBUG: visa om detta är shared mailbox
-  if (typeof item.getSharedPropertiesAsync === "function") {
-    item.getSharedPropertiesAsync((sharedResult) => {
-      if (sharedResult.status === Office.AsyncResultStatus.Succeeded) {
-        console.log("Shared mailbox detected:", sharedResult.value);
+  console.log("Before addAsync");
+
+  try {
+    item.categories.addAsync([categoryName], (result) => {
+      console.log("Inside addAsync callback");
+      console.log("addAsync result:", result);
+
+      if (result.status === Office.AsyncResultStatus.Succeeded) {
+        notify(
+          item,
+          Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,
+          "Kategorin Beställning lades till."
+        );
       } else {
-        console.log("Not a shared mailbox or shared properties unavailable");
+        console.error("item.categories.addAsync failed:", result.error);
+        notify(
+          item,
+          Office.MailboxEnums.ItemNotificationMessageType.ErrorMessage,
+          `Kunde inte sätta kategorin '${categoryName}'. Fel: ${result.error.code} - ${result.error.message}`,
+          true
+        );
       }
+
+      event.completed();
     });
+  } catch (err) {
+    console.error("Synchronous error before callback:", err);
+    notify(
+      item,
+      Office.MailboxEnums.ItemNotificationMessageType.ErrorMessage,
+      `Ov\u00e4ntat fel: ${err.message || err}`,
+      true
+    );
+    event.completed();
   }
 
-  console.log("Attempting to add category:", categoryName);
-
-  item.categories.addAsync([categoryName], (result) => {
-    console.log("addAsync result:", result);
-
-    if (result.status === Office.AsyncResultStatus.Succeeded) {
-      console.log("Category added successfully");
-
-      notify(
-        item,
-        Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,
-        "Kategorin Beställning lades till."
-      );
-    } else {
-      console.error("item.categories.addAsync failed:", result.error);
-
-      notify(
-        item,
-        Office.MailboxEnums.ItemNotificationMessageType.ErrorMessage,
-        `Kunde inte sätta kategorin '${categoryName}'. Fel: ${result.error.code} - ${result.error.message}`,
-        true
-      );
-    }
-
-    event.completed();
-  });
+  console.log("After addAsync call");
 }
 
 Office.actions.associate("setOrderCategory", setOrderCategory);
