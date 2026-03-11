@@ -10,8 +10,8 @@
   <Version>1.0.0.7</Version>
   <ProviderName>Community Sverige</ProviderName>
   <DefaultLocale>sv-SE</DefaultLocale>
-  <DisplayName DefaultValue="Beställning"/>
-  <Description DefaultValue="Lägger till kategorin Beställning på mailet."/>
+  <DisplayName DefaultValue="Flagga beställning"/>
+  <Description DefaultValue="Flaggar mailet som en beställning."/>
   <IconUrl DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/assets/icon-64.png"/>
   <HighResolutionIconUrl DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/assets/icon-128.png"/>
   <SupportUrl DefaultValue="https://communitysverigeab.github.io/OutlookAdd-inButton/"/>
@@ -102,11 +102,11 @@
 
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="Community"/>
-        <bt:String id="OrderButton.Label" DefaultValue="Beställning"/>
+        <bt:String id="OrderButton.Label" DefaultValue="Flagga beställning"/>
       </bt:ShortStrings>
 
       <bt:LongStrings>
-        <bt:String id="OrderButton.Tooltip" DefaultValue="Lägg till kategorin Beställning på mailet."/>
+        <bt:String id="OrderButton.Tooltip" DefaultValue="Flaggar mailet som en beställning."/>
       </bt:LongStrings>
     </Resources>
 
@@ -166,11 +166,11 @@
 
         <bt:ShortStrings>
           <bt:String id="GroupLabel" DefaultValue="Community"/>
-          <bt:String id="OrderButton.Label" DefaultValue="Beställning"/>
+          <bt:String id="OrderButton.Label" DefaultValue="Flagga beställning"/>
         </bt:ShortStrings>
 
         <bt:LongStrings>
-          <bt:String id="OrderButton.Tooltip" DefaultValue="Lägg till kategorin Beställning på mailet."/>
+          <bt:String id="OrderButton.Tooltip" DefaultValue="Flaggar mailet som en beställning."/>
         </bt:LongStrings>
       </Resources>
 
