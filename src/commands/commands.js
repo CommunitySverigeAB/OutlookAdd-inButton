@@ -1,7 +1,7 @@
 /* global Office */
 
 Office.onReady(() => {
-  // Ready
+  console.log("Office add-in ready");
 });
 
 function notify(item, type, message, persistent = false) {
@@ -18,13 +18,22 @@ function notify(item, type, message, persistent = false) {
 }
 
 function setOrderCategory(event) {
-  const item = Office.context.mailbox.item;
+  console.log("Button clicked");
+
+  const mailbox = Office.context.mailbox;
+  const item = mailbox.item;
   const categoryName = "Beställning";
 
+  console.log("Mailbox:", mailbox);
+  console.log("Item:", item);
+
   if (!item) {
+    console.log("No item found");
     event.completed();
     return;
   }
+
+  console.log("Existing categories on item:", item.categories);
 
   if (!item.categories) {
     notify(
@@ -37,19 +46,37 @@ function setOrderCategory(event) {
     return;
   }
 
-  // Frivillig felsökning: visa om det faktiskt är shared mailbox/delegate-scenario.
+  // 🔎 DEBUG: visa mailboxens master categories
+  mailbox.masterCategories.getAsync((res) => {
+    console.log("Master categories response:", res);
+
+    if (res.status === Office.AsyncResultStatus.Succeeded) {
+      const names = res.value.map(c => c.displayName);
+      console.log("Master category names:", names);
+    } else {
+      console.error("Failed to read master categories:", res.error);
+    }
+  });
+
+  // 🔎 DEBUG: visa om detta är shared mailbox
   if (typeof item.getSharedPropertiesAsync === "function") {
     item.getSharedPropertiesAsync((sharedResult) => {
       if (sharedResult.status === Office.AsyncResultStatus.Succeeded) {
         console.log("Shared mailbox detected:", sharedResult.value);
       } else {
-        console.log("Not a shared mailbox/delegate item or shared properties unavailable.");
+        console.log("Not a shared mailbox or shared properties unavailable");
       }
     });
   }
 
+  console.log("Attempting to add category:", categoryName);
+
   item.categories.addAsync([categoryName], (result) => {
+    console.log("addAsync result:", result);
+
     if (result.status === Office.AsyncResultStatus.Succeeded) {
+      console.log("Category added successfully");
+
       notify(
         item,
         Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,
@@ -61,7 +88,7 @@ function setOrderCategory(event) {
       notify(
         item,
         Office.MailboxEnums.ItemNotificationMessageType.ErrorMessage,
-        `Kunde inte sätta kategorin '${categoryName}'. Säkerställ att kategorin redan finns i den delade brevlådan. Tekniskt fel: ${result.error.message}`,
+        `Kunde inte sätta kategorin '${categoryName}'. Fel: ${result.error.code} - ${result.error.message}`,
         true
       );
     }
