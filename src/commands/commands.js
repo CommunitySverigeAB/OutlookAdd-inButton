@@ -46,19 +46,7 @@ function setOrderCategory(event) {
     return;
   }
 
-  // 🔎 DEBUG: visa mailboxens master categories
-  mailbox.masterCategories.getAsync((res) => {
-    console.log("Master categories response:", res);
-
-    if (res.status === Office.AsyncResultStatus.Succeeded) {
-      const names = res.value.map(c => c.displayName);
-      console.log("Master category names:", names);
-    } else {
-      console.error("Failed to read master categories:", res.error);
-    }
-  });
-
-  // 🔎 DEBUG: visa om detta är shared mailbox
+  // DEBUG: visa om detta är shared mailbox
   if (typeof item.getSharedPropertiesAsync === "function") {
     item.getSharedPropertiesAsync((sharedResult) => {
       if (sharedResult.status === Office.AsyncResultStatus.Succeeded) {
