@@ -7,7 +7,7 @@
   xsi:type="MailApp">
 
   <Id>d70a18a8-9705-4fe1-8a07-ab1c9aa8b3ee</Id>
-  <Version>1.0.0.4</Version>
+  <Version>1.0.0.5</Version>
   <ProviderName>Community Sverige</ProviderName>
   <DefaultLocale>sv-SE</DefaultLocale>
   <DisplayName DefaultValue="Beställning"/>
@@ -25,10 +25,10 @@
   </Hosts>
 
   <Requirements>
-  <Sets>
-    <Set Name="Mailbox" MinVersion="1.8"/>
-  </Sets>
-</Requirements>
+    <Sets>
+      <Set Name="Mailbox" MinVersion="1.13"/>
+    </Sets>
+  </Requirements>
 
   <FormSettings>
     <Form xsi:type="ItemRead">
@@ -51,11 +51,11 @@
     xmlns="http://schemas.microsoft.com/office/mailappversionoverrides"
     xsi:type="VersionOverridesV1_0">
 
-  <Requirements>
-  <bt:Sets DefaultMinVersion="1.8">
-    <bt:Set Name="Mailbox"/>
-  </bt:Sets>
-</Requirements>
+    <Requirements>
+      <bt:Sets DefaultMinVersion="1.13">
+        <bt:Set Name="Mailbox"/>
+      </bt:Sets>
+    </Requirements>
 
     <Hosts>
       <Host xsi:type="MailHost">
@@ -82,7 +82,6 @@
                     <FunctionName>setOrderCategory</FunctionName>
                   </Action>
                 </Control>
-
               </Group>
             </OfficeTab>
           </ExtensionPoint>
@@ -107,7 +106,7 @@
       </bt:ShortStrings>
 
       <bt:LongStrings>
-        <bt:String id="OrderButton.Tooltip" DefaultValue="Lägger till kategorin Beställning på mailet."/>
+        <bt:String id="OrderButton.Tooltip" DefaultValue="Lägg till kategorin Beställning på mailet."/>
       </bt:LongStrings>
     </Resources>
 
@@ -147,7 +146,6 @@
                       <FunctionName>setOrderCategory</FunctionName>
                     </Action>
                   </Control>
-
                 </Group>
               </OfficeTab>
             </ExtensionPoint>
@@ -172,11 +170,10 @@
         </bt:ShortStrings>
 
         <bt:LongStrings>
-          <bt:String id="OrderButton.Tooltip" DefaultValue="Lägger till kategorin Beställning på mailet."/>
+          <bt:String id="OrderButton.Tooltip" DefaultValue="Lägg till kategorin Beställning på mailet."/>
         </bt:LongStrings>
       </Resources>
 
     </VersionOverrides>
-
   </VersionOverrides>
 </OfficeApp>

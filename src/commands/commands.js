@@ -1,16 +1,20 @@
 /* global Office */
 
 Office.onReady(() => {
-  // Outlook add-in ready
+  // Ready
 });
 
 function notify(item, type, message, persistent = false) {
-  item.notificationMessages.replaceAsync("orderStatus", {
-    type,
-    message,
-    icon: "Icon.16x16",
-    persistent
-  });
+  item.notificationMessages.replaceAsync(
+    "orderStatus",
+    {
+      type,
+      message,
+      icon: "Icon.16x16",
+      persistent
+    },
+    () => {}
+  );
 }
 
 function setOrderCategory(event) {
@@ -22,85 +26,47 @@ function setOrderCategory(event) {
     return;
   }
 
-  if (!Office.context.mailbox.masterCategories) {
+  if (!item.categories) {
     notify(
       item,
       Office.MailboxEnums.ItemNotificationMessageType.ErrorMessage,
-      "Klienten stödjer inte master categories för detta add-in.",
+      "Den här Outlook-klienten stödjer inte kategorier för det här scenariot.",
       true
     );
     event.completed();
     return;
   }
 
-  const applyCategoryToItem = () => {
-    item.categories.addAsync([categoryName], (result) => {
-      if (result.status === Office.AsyncResultStatus.Succeeded) {
-        notify(
-          item,
-          Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,
-          "Kategorin Beställning lades till."
-        );
+  // Frivillig felsökning: visa om det faktiskt är shared mailbox/delegate-scenario.
+  if (typeof item.getSharedPropertiesAsync === "function") {
+    item.getSharedPropertiesAsync((sharedResult) => {
+      if (sharedResult.status === Office.AsyncResultStatus.Succeeded) {
+        console.log("Shared mailbox detected:", sharedResult.value);
       } else {
-        console.error("item.categories.addAsync failed", result.error);
-        notify(
-          item,
-          Office.MailboxEnums.ItemNotificationMessageType.ErrorMessage,
-          `Kunde inte sätta kategori: ${result.error.message}`,
-          true
-        );
+        console.log("Not a shared mailbox/delegate item or shared properties unavailable.");
       }
-
-      event.completed();
     });
-  };
+  }
 
-  Office.context.mailbox.masterCategories.getAsync((masterResult) => {
-    if (masterResult.status !== Office.AsyncResultStatus.Succeeded) {
-      console.error("masterCategories.getAsync failed", masterResult.error);
+  item.categories.addAsync([categoryName], (result) => {
+    if (result.status === Office.AsyncResultStatus.Succeeded) {
+      notify(
+        item,
+        Office.MailboxEnums.ItemNotificationMessageType.InformationalMessage,
+        "Kategorin Beställning lades till."
+      );
+    } else {
+      console.error("item.categories.addAsync failed:", result.error);
+
       notify(
         item,
         Office.MailboxEnums.ItemNotificationMessageType.ErrorMessage,
-        `Kunde inte läsa kategorier: ${masterResult.error.message}`,
+        `Kunde inte sätta kategorin '${categoryName}'. Säkerställ att kategorin redan finns i den delade brevlådan. Tekniskt fel: ${result.error.message}`,
         true
       );
-      event.completed();
-      return;
     }
 
-    const existingCategories = masterResult.value || [];
-    const categoryExists = existingCategories.some(
-      (c) => c.displayName === categoryName
-    );
-
-    if (categoryExists) {
-      applyCategoryToItem();
-      return;
-    }
-
-    Office.context.mailbox.masterCategories.addAsync(
-      [
-        {
-          displayName: categoryName,
-          color: Office.MailboxEnums.CategoryColor.Preset0
-        }
-      ],
-      (addResult) => {
-        if (addResult.status !== Office.AsyncResultStatus.Succeeded) {
-          console.error("masterCategories.addAsync failed", addResult.error);
-          notify(
-            item,
-            Office.MailboxEnums.ItemNotificationMessageType.ErrorMessage,
-            `Kunde inte skapa kategorin: ${addResult.error.message}`,
-            true
-          );
-          event.completed();
-          return;
-        }
-
-        applyCategoryToItem();
-      }
-    );
+    event.completed();
   });
 }
 
