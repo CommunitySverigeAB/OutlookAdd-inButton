@@ -9,7 +9,7 @@ const msalConfig = {
   },
 };
 
-const graphScopes = ["User.Read", "Mail.ReadWrite"];
+const graphScopes = ["User.Read", "Mail.ReadWrite", "Mail.ReadWrite.Shared"];
 
 Office.onReady(() => {
   console.log("Office add-in ready");
@@ -53,6 +53,28 @@ async function getGraphToken() {
   return interactive.accessToken;
 }
 
+function getSharedMailboxAddress(item) {
+  return new Promise((resolve) => {
+    if (!item.getSharedPropertiesAsync) {
+      resolve(null);
+      return;
+    }
+
+    item.getSharedPropertiesAsync((result) => {
+      if (result.status === Office.AsyncResultStatus.Succeeded) {
+        console.log("Shared properties:", result.value);
+
+        // targetMailbox används i shared mailbox / delegated scenarios
+        const mailboxAddress = result.value?.targetMailbox || null;
+        resolve(mailboxAddress);
+      } else {
+        console.warn("getSharedPropertiesAsync failed:", result.error);
+        resolve(null);
+      }
+    });
+  });
+}
+
 async function flagMessageWithGraph(item, accessToken) {
   const restId = Office.context.mailbox.convertToRestId(
     item.itemId,
@@ -62,21 +84,27 @@ async function flagMessageWithGraph(item, accessToken) {
   console.log("Original itemId:", item.itemId);
   console.log("Converted REST id:", restId);
 
-  const response = await fetch(
-    `https://graph.microsoft.com/v1.0/me/messages/${encodeURIComponent(restId)}`,
-    {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+  const sharedMailboxAddress = await getSharedMailboxAddress(item);
+
+  const graphUrl = sharedMailboxAddress
+    ? `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(sharedMailboxAddress)}/messages/${encodeURIComponent(restId)}`
+    : `https://graph.microsoft.com/v1.0/me/messages/${encodeURIComponent(restId)}`;
+
+  console.log("Graph URL:", graphUrl);
+  console.log("Shared mailbox address:", sharedMailboxAddress);
+
+  const response = await fetch(graphUrl, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      flag: {
+        flagStatus: "flagged",
       },
-      body: JSON.stringify({
-        flag: {
-          flagStatus: "flagged",
-        },
-      }),
-    }
-  );
+    }),
+  });
 
   if (!response.ok) {
     const text = await response.text();
